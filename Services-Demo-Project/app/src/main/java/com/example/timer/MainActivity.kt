@@ -1,6 +1,8 @@
 package com.example.timer
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
@@ -20,8 +22,10 @@ import androidx.compose.ui.unit.sp
 import com.example.timer.ui.theme.TimerTheme
 
 class MainActivity : ComponentActivity() {
+    lateinit var serviceIntent: Intent
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        serviceIntent = Intent(this, MainService::class.java)
         setContent {
             TimerTheme {
                 // A surface container using the 'background' color from the theme
@@ -29,15 +33,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainView()
+                    MainView(startService)
                 }
             }
         }
     }
+    private val startService:()->Unit = {
+        startService(serviceIntent)
+    }
 }
 
+
+
 @Composable
-fun MainView(){
+fun MainView(startService: ()->Unit){
     Column(modifier = Modifier
         .fillMaxWidth(),
         verticalArrangement = Arrangement.SpaceEvenly,
@@ -47,22 +56,20 @@ fun MainView(){
             style = TextStyle(Color.White, fontSize = 32.sp, fontWeight = FontWeight(700), textAlign = TextAlign.Center))
 
         Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly) {
-            Button(onClick = { /*TODO*/ }) {
+            Button(onClick = {startService()}) {
                 Text(text = "START", style=TextStyle(Color.White, fontSize = 20.sp ))
             }
             Button(onClick = { /*TODO*/ }) {
                 Text(text = "PAUSE", style=TextStyle(Color.White, fontSize = 20.sp ))
             }
         }
-
-
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    TimerTheme {
-        MainView()
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun DefaultPreview() {
+//    TimerTheme {
+//        MainView(() ->)
+//    }
+//}
